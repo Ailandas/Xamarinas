@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="XAMARIN_MVVM.Views.ItemsPage"
+             Title="{Binding Title}"
+             xmlns:local="clr-namespace:XAMARIN_MVVM.ViewModels"  
+             xmlns:model="clr-namespace:XAMARIN_MVVM.Models"  
+             x:Name="BrowseItemsPage">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="SMS" Command="{Binding SendListCommand}" />
+        <ToolbarItem Text="Add" Command="{Binding AddItemCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <RefreshView x:DataType="local:ItemsViewModel" Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+        <CollectionView x:Name="ItemsListView"
+                ItemsSource="{Binding Items}"
+                SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame BorderColor="Gray" CornerRadius="15">
+                        <StackLayout Padding="10" x:DataType="model:Item" Orientation="Horizontal" HeightRequest="50">
+                            <StackLayout Orientation="Vertical">
+                                <Label Text="{Binding Text} " 
+                                LineBreakMode="NoWrap" 
+                                Style="{DynamicResource ListItemTextStyle}" 
+                                FontSize="16" />
+                                <Label Text="{Binding Description}" 
+                                LineBreakMode="NoWrap"
+                                Style="{DynamicResource ListItemDetailTextStyle}"
+                                FontSize="13"/>
+                                
+                            </StackLayout>
+                            <Label Text="{Binding Price, StringFormat=\{0\}€}" Margin="3,0,0,0" HorizontalOptions="StartAndExpand"></Label>
+                            <Image HorizontalOptions="End" Aspect="AspectFit" Source="logo.png" ></Image>
+                            
+
+                            <StackLayout.GestureRecognizers>
+                                <TapGestureRecognizer 
+                                NumberOfTapsRequired="1"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type local:ItemsViewModel}}, Path=ItemTapped}"		
+                                CommandParameter="{Binding .}">
+                                </TapGestureRecognizer>
+                            </StackLayout.GestureRecognizers>
+                        </StackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </RefreshView>
+</ContentPage>
